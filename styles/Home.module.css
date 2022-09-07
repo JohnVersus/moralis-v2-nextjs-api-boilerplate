@@ -1,0 +1,27 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30vw;
+  height: 50vh;
+  border-radius: 36px;
+  box-shadow: 2px 2px 2px 0 rgba(0, 0, 0, 0.25);
+  border-top-style: solid;
+  border-left-style: solid;
+  border-top-color: #2ac4d9;
+  border-left-color: #2ac4d9;
+}
+
+.card:hover {
+  box-shadow: 3px 3px 3px 0 rgba(0, 0, 0, 0.25);
+}
