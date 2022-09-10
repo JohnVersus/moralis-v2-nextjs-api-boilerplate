@@ -2,10 +2,11 @@ import React from "react";
 import { Button } from "@web3uikit/core";
 import { signIn } from "next-auth/react";
 import apiPost from "../../utils/apiPost";
+import { ethers } from "ethers";
 
 export default function LoginBtn() {
   const authenticate = async () => {
-    const provider = new _ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider(window.ethereum);
     const accounts = await provider.send("eth_requestAccounts", []);
     const chainId = await window.ethereum.request({ method: "eth_chainId" });
     const signer = provider.getSigner();
