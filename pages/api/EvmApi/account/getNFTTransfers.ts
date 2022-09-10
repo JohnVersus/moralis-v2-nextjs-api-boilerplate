@@ -13,6 +13,7 @@ export default async function handler(
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
+    console.log("getNFTTransfers");
     const data = await Moralis.EvmApi.account.getNFTTransfers({
       address: req.body.address,
       chain: req.body.chain,

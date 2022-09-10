@@ -14,7 +14,7 @@ export const getServerSideProps = async (context: Context) => {
   if (!session) {
     return { redirect: { destination: "/" } };
   }
-  let data;
+  let data = "";
 
   if (session) {
     console.log("session", (session as unknown as CryptoUser).user.chainId);
