@@ -4,8 +4,8 @@ import NextAuth, { ISODateString } from "next-auth";
 import type { DefaultUser, DefaultSession } from "next-auth";
 import { Session } from "next-auth";
 import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
-import clientPromise from "../../../lib/mongodb";
-import dbConnect from "../../../lib/dbConnect";
+import clientPromise from "../../../lib/mongodb/mongodb";
+import dbConnect from "../../../lib/mongodb/dbConnect";
 import CryptoUser from "../../../model/CryptoUser";
 import User from "../../../model/User";
 
@@ -40,14 +40,11 @@ export default NextAuth({
       async authorize(credentials) {
         try {
           const { message, signature } = credentials as Record<string, string>;
-
           await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
-
           const { address, chainId, profileId, expirationTime, uri } = (
             await Moralis.Auth.verify({ message, signature, network: "evm" })
           ).raw;
           const nextAuthUrl = process.env.NEXTAUTH_URL;
-
           if (uri !== nextAuthUrl) {
             return null;
           }
