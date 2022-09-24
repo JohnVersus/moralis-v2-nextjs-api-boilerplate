@@ -10,13 +10,15 @@ export default async function handler(
   req: getTokenMetadataBySymbolRequest,
   res: NextApiResponse
 ) {
+  const { chain, subdomain, symbols } = req.body;
+
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.token.getTokenMetadataBySymbol({
-      chain: req.body.chain,
-      subdomain: req.body.subdomain,
-      symbols: req.body.symbols,
+      chain,
+      subdomain,
+      symbols,
     });
     res.status(200).json(data);
   } catch (error) {

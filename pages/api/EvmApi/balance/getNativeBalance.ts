@@ -1,25 +1,24 @@
 import Moralis from "moralis";
 import { NextApiRequest, NextApiResponse } from "next";
-import type { getPairReservesParams } from "../../../../src/types/EvmApi";
+import type { getNativeBalanceParams } from "../../../../src/types/EvmApi";
 
-interface getPairReservesRequest extends NextApiRequest {
-  body: getPairReservesParams;
+interface getNativeBalanceRequest extends NextApiRequest {
+  body: getNativeBalanceParams;
 }
 
 export default async function handler(
-  req: getPairReservesRequest,
+  req: getNativeBalanceRequest,
   res: NextApiResponse
 ) {
-  const { chain, pairAddress, providerUrl, toBlock, toDate } = req.body;
+  const { address, chain, providerUrl, toBlock } = req.body;
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
-    const data = await Moralis.EvmApi.defi.getPairReserves({
+    const data = await Moralis.EvmApi.balance.getNativeBalance({
+      address,
       chain,
-      pairAddress,
       providerUrl,
       toBlock,
-      toDate,
     });
     res.status(200).json(data);
   } catch (error) {

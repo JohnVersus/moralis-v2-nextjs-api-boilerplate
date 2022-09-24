@@ -1,2 +1,2 @@
-app/types/EvmApi
-app/types/SolApi
+src/types/EvmApi
+src/types/SolApi

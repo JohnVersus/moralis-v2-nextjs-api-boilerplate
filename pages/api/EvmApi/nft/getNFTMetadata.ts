@@ -1,22 +1,23 @@
 import Moralis from "moralis";
 import { NextApiRequest, NextApiResponse } from "next";
-import type { resolveAddressParams } from "../../../../src/types/EvmApi";
+import type { getNFTMetadataParams } from "../../../../src/types/EvmApi";
 
-interface resolveAddressRequest extends NextApiRequest {
-  body: resolveAddressParams;
+interface getNFTMetadataRequest extends NextApiRequest {
+  body: getNFTMetadataParams;
 }
 
 export default async function handler(
-  req: resolveAddressRequest,
+  req: getNFTMetadataRequest,
   res: NextApiResponse
 ) {
-  const { address } = req.body;
+  const { address, chain } = req.body;
 
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
-    const data = await Moralis.EvmApi.resolve.resolveAddress({
+    const data = await Moralis.EvmApi.nft.getNFTMetadata({
       address,
+      chain,
     });
     res.status(200).json(data);
   } catch (error) {

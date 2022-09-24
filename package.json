@@ -14,7 +14,7 @@
     "ethers": "^5.7.0",
     "mongodb": "^4.9.1",
     "mongoose": "^6.6.0",
-    "moralis": "^2.3.1",
+    "moralis": "^2.5.7",
     "next": "12.2.4",
     "next-auth": "^4.10.3",
     "react": "18.2.0",

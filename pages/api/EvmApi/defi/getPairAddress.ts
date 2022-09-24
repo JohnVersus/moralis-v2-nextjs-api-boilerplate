@@ -10,16 +10,18 @@ export default async function handler(
   req: getPairAddressRequest,
   res: NextApiResponse
 ) {
+  const { chain, exchange, toBlock, toDate, token0Address, token1Address } =
+    req.body;
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.defi.getPairAddress({
-      chain: req.body.chain,
-      exchange: req.body.exchange,
-      toBlock: req.body.toBlock,
-      toDate: req.body.toDate,
-      token0Address: req.body.token0Address,
-      token1Address: req.body.token1Address,
+      chain,
+      exchange,
+      toBlock,
+      toDate,
+      token0Address,
+      token1Address,
     });
     res.status(200).json(data);
   } catch (error) {

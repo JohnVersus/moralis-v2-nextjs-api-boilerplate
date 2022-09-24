@@ -1,26 +1,26 @@
 import Moralis from "moralis";
 import { NextApiRequest, NextApiResponse } from "next";
-import type { getTokenPriceParams } from "../../../../src/types/EvmApi";
+import type { getNFTLowestPriceParams } from "../../../../src/types/EvmApi";
 
-interface getTokenPriceRequest extends NextApiRequest {
-  body: getTokenPriceParams;
+interface getNFTLowestPriceRequest extends NextApiRequest {
+  body: getNFTLowestPriceParams;
 }
 
 export default async function handler(
-  req: getTokenPriceRequest,
+  req: getNFTLowestPriceRequest,
   res: NextApiResponse
 ) {
-  const { address, chain, exchange, providerUrl, to_block } = req.body;
+  const { address, chain, days, marketplace, providerUrl } = req.body;
 
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
-    const data = await Moralis.EvmApi.token.getTokenPrice({
+    const data = await Moralis.EvmApi.nft.getNFTLowestPrice({
       address,
       chain,
-      exchange,
+      days,
+      marketplace,
       providerUrl,
-      to_block,
     });
     res.status(200).json(data);
   } catch (error) {

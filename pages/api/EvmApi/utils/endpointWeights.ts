@@ -1,23 +1,21 @@
 import Moralis from "moralis";
 import { NextApiRequest, NextApiResponse } from "next";
-import type { resolveAddressParams } from "../../../../src/types/EvmApi";
+import type { endpointWeightsParams } from "../../../../src/types/EvmApi";
 
-interface resolveAddressRequest extends NextApiRequest {
-  body: resolveAddressParams;
+interface endpointWeightsRequest extends NextApiRequest {
+  body: endpointWeightsParams;
 }
 
 export default async function handler(
-  req: resolveAddressRequest,
+  req: endpointWeightsRequest,
   res: NextApiResponse
 ) {
-  const { address } = req.body;
+  const {} = req.body;
 
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
-    const data = await Moralis.EvmApi.resolve.resolveAddress({
-      address,
-    });
+    const data = await Moralis.EvmApi.utils.endpointWeights();
     res.status(200).json(data);
   } catch (error) {
     res.status(400).json(error);
