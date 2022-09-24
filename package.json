@@ -12,6 +12,7 @@
     "@next-auth/mongodb-adapter": "^1.0.4",
     "@web3uikit/core": "^0.1.4",
     "ethers": "^5.7.0",
+    "firebase": "^9.10.0",
     "mongodb": "^4.9.1",
     "mongoose": "^6.6.0",
     "moralis": "^2.5.7",
