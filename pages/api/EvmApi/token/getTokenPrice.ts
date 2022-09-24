@@ -10,15 +10,17 @@ export default async function handler(
   req: getTokenPriceRequest,
   res: NextApiResponse
 ) {
+  const { address, chain, exchange, providerUrl, to_block } = req.body;
+
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.token.getTokenPrice({
-      address: req.body.address,
-      chain: req.body.chain,
-      exchange: req.body.exchange,
-      providerUrl: req.body.providerUrl,
-      to_block: req.body.to_block,
+      address,
+      chain,
+      exchange,
+      providerUrl,
+      to_block,
     });
     res.status(200).json(data);
   } catch (error) {

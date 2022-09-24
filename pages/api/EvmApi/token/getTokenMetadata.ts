@@ -10,14 +10,16 @@ export default async function handler(
   req: getTokenMetadataRequest,
   res: NextApiResponse
 ) {
+  const { addresses, chain, providerUrl, subdomain } = req.body;
+
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.token.getTokenMetadata({
-      addresses: req.body.addresses,
-      chain: req.body.chain,
-      providerUrl: req.body.providerUrl,
-      subdomain: req.body.subdomain,
+      addresses,
+      chain,
+      providerUrl,
+      subdomain,
     });
     res.status(200).json(data);
   } catch (error) {

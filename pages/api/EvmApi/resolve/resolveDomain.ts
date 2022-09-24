@@ -10,12 +10,14 @@ export default async function handler(
   req: resolveDomainRequest,
   res: NextApiResponse
 ) {
+  const { currency, domain } = req.body;
+
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.resolve.resolveDomain({
-      currency: req.body.currency,
-      domain: req.body.domain,
+      currency,
+      domain,
     });
     res.status(200).json(data);
   } catch (error) {

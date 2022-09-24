@@ -10,15 +10,16 @@ export default async function handler(
   req: getPairReservesRequest,
   res: NextApiResponse
 ) {
+  const { chain, pairAddress, providerUrl, toBlock, toDate } = req.body;
   await Moralis.start({ apiKey: process.env.MORALIS_API_KEY });
 
   try {
     const data = await Moralis.EvmApi.defi.getPairReserves({
-      chain: req.body.chain,
-      pairAddress: req.body.pairAddress,
-      providerUrl: req.body.providerUrl,
-      toBlock: req.body.toBlock,
-      toDate: req.body.toDate,
+      chain,
+      pairAddress,
+      providerUrl,
+      toBlock,
+      toDate,
     });
     res.status(200).json(data);
   } catch (error) {
