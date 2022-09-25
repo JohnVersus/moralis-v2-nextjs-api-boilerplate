@@ -1,28 +1,48 @@
-import React, { useEffect } from "react";
-import styles from "../styles/Home.module.css";
-import { useRouter } from "next/router";
-import { Typography } from "@web3uikit/core";
-import { useSession, getSession, GetSessionParams } from "next-auth/react";
-import LoginBtn from "../src/components/loginBtn/loginBtn";
+import React from "react";
+import Home from "../src/components/templates/Home/Home";
+import { getSession } from "next-auth/react";
+import { serverApiPost } from "../src/utils/apiPost";
+import { EvmChain } from "@moralisweb3/evm-utils";
+import type { Session } from "next-auth";
+import type { Context } from "vm";
+import type { CryptoUser } from "./api/auth/[...nextauth]";
+import type { getNativeBalanceResult } from "../src/types/EvmApi";
 
-export default function Home(context: GetSessionParams | undefined) {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+export const getServerSideProps = async (context: Context) => {
+  const session: Session | null = await getSession(context);
+  // if (!session) {
+  //   return { redirect: { destination: "/" } };
+  // }
+  let balance = null;
+  let chainData = null;
 
-  useEffect(() => {
-    session && status === "authenticated" && router.push("/user");
-    session && console.log(session);
-  }, [session, status]);
+  if (session) {
+    const options = {
+      address: (session as unknown as CryptoUser).user.address,
+      chain: (session as unknown as CryptoUser).user.chainId,
+    };
+    balance = await serverApiPost(
+      "api/EvmApi/balance/getNativeBalance",
+      options
+    );
+    const chainID = (session as unknown as CryptoUser).user.chainId;
+    chainData = await serverApiPost("api/utils/getChainData", chainID);
+  }
+  return {
+    props: { userSession: session, balance, chainData },
+  };
+};
 
+export default function Index({
+  userSession,
+  balance,
+  chainData,
+}: {
+  userSession: CryptoUser;
+  balance: getNativeBalanceResult;
+  chainData: EvmChain;
+}) {
   return (
-    <div className={styles.body}>
-      <div className={styles.card}>
-        {!session ? (
-          <LoginBtn />
-        ) : (
-          <Typography variant="caption14">Loading...</Typography>
-        )}
-      </div>
-    </div>
+    <Home userSession={userSession} balance={balance} chainData={chainData} />
   );
 }

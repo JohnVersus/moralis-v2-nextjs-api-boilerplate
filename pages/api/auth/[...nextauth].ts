@@ -53,7 +53,6 @@ export default NextAuth({
           const eUser = await CryptoUser.findOne({
             profileId: profileId,
           });
-          console.log({ eUser, profileId });
           if (!eUser) {
             const newUser = new CryptoUser({
               address,
@@ -64,9 +63,7 @@ export default NextAuth({
             });
             newUser
               .save()
-              .then((newUser: any) => {
-                console.log({ newUser });
-              })
+              .then((newUser: any) => {})
               .catch((e: any) => {
                 console.log(e);
               });
@@ -75,14 +72,15 @@ export default NextAuth({
           } else {
             const User = await CryptoUser.findOneAndUpdate(
               {
-                profileId: profileId,
+                profileId,
               },
-              { expirationTime },
+              { expirationTime, chainId, signature },
               { returnOriginal: false }
             );
             return User;
           }
         } catch (e) {
+          console.log(e);
           throw new Error(`${e}`);
         }
       },
@@ -91,7 +89,6 @@ export default NextAuth({
   callbacks: {
     // For JWT sessions
     async jwt({ token, user }) {
-      console.log({ user });
       user && (token.user = user);
       return token;
     },
