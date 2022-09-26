@@ -27,7 +27,7 @@ export default function Test({
         options
       );
       console.log({ response });
-      alert("Check consle for Response");
+      alert("Check console for response");
     }
   };
   return <Button onClick={test} text={"Test me"} />;
