@@ -46,38 +46,50 @@ export default NextAuth({
           ).raw;
           const nextAuthUrl = process.env.NEXTAUTH_URL;
           if (uri !== nextAuthUrl) {
-            return null;
+            throw new Error("nextAuthUrl !== uri");
           }
 
-          await dbConnect();
-          const eUser = await CryptoUser.findOne({
-            profileId: profileId,
-          });
-          if (!eUser) {
-            const newUser = new CryptoUser({
-              address,
-              chainId,
-              profileId,
-              expirationTime,
-              signature,
-            });
-            newUser
-              .save()
-              .then((newUser: any) => {})
-              .catch((e: any) => {
-                console.log(e);
+          switch (process.env.DATABASE) {
+            case "mongo":
+              await dbConnect();
+              const eUser = await CryptoUser.findOne({
+                profileId: profileId,
               });
+              if (!eUser) {
+                const newUser = new CryptoUser({
+                  address,
+                  chainId,
+                  profileId,
+                  expirationTime,
+                  signature,
+                });
+                newUser
+                  .save()
+                  .then((newUser: any) => {})
+                  .catch((e: any) => {
+                    console.log(e);
+                  });
 
-            return newUser;
-          } else {
-            const User = await CryptoUser.findOneAndUpdate(
-              {
+                return newUser;
+              } else {
+                const User = await CryptoUser.findOneAndUpdate(
+                  {
+                    profileId,
+                  },
+                  { expirationTime, chainId, signature },
+                  { returnOriginal: false }
+                );
+                return User;
+              }
+            default:
+              const user = {
+                address,
+                chainId,
                 profileId,
-              },
-              { expirationTime, chainId, signature },
-              { returnOriginal: false }
-            );
-            return User;
+                expirationTime,
+                signature,
+              };
+              return user;
           }
         } catch (e) {
           console.log(e);
