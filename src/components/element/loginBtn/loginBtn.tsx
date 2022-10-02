@@ -4,32 +4,89 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { clientApiPost } from "../../../utils/apiPost";
 import { ethers } from "ethers";
 import { ExternalProvider } from "@ethersproject/providers";
+import { useRouter } from "next/router";
+import { CryptoUser } from "../../../../pages/api/auth/[...nextauth]";
 
 export default function LoginBtn() {
   const [ethereum, setEthereum] = useState<ExternalProvider>();
   const { data: session, status } = useSession();
   const [authStatus, setAuthStatus] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     setEthereum(global.window.ethereum);
   }, []);
 
   useEffect(() => {
-    if (ethereum) {
+    if (ethereum && session) {
       (ethereum as any).removeAllListeners();
-      (ethereum as any).on("accountsChanged", () => {
-        setAuthStatus("Changing Account");
-        authenticate();
+
+      (ethereum as any).on("accountsChanged", (account: string[]) => {
+        console.log("Trigger account change");
+        if (
+          account.length > 0 &&
+          (session as unknown as CryptoUser)
+          // for Special Case where user manually disconnects from metamask
+          // (session as unknown as CryptoUser).user.address === account[0]
+        ) {
+          setAuthStatus("Changing Account");
+          authenticate();
+        } else {
+          logOut();
+        }
       });
-      (ethereum as any).on("chainChanged", () => {
-        setAuthStatus("Changing Chain");
-        authenticate();
+      (ethereum as any).on("chainChanged", (chain: string) => {
+        console.log("Trigger chain change");
+        console.log(session, status);
+        if (chain && session) {
+          setAuthStatus("Changing Chain");
+          authenticate();
+        } else {
+          logOut();
+        }
       });
     }
-  }, [ethereum]);
+    return () => {
+      if (ethereum) {
+        (ethereum as any).removeListener("accountsChanged", () => {});
+        (ethereum as any).removeListener("chainChanged", () => {});
+        // (ethereum as any).removeAllListeners();
+      }
+    };
+  }, [ethereum, session]);
+
+  const addListeners = () => {
+    if (ethereum) {
+      (ethereum as any).on("accountsChanged", (account: string[]) => {
+        if (account.length > 0) {
+          setAuthStatus("Changing Account");
+          console.log(account);
+          authenticate();
+        } else {
+          logOut();
+        }
+      });
+      (ethereum as any).on("chainChanged", (account: string[]) => {
+        console.log(account);
+        if (account.length > 0) {
+          setAuthStatus("Changing Chain");
+          console.log(account);
+          authenticate();
+        } else {
+          logOut();
+        }
+      });
+    }
+  };
+
+  const removeListeners = () => {
+    if (ethereum) {
+      (ethereum as any).removeAllListeners();
+    }
+  };
 
   useEffect(() => {
-    session && setAuthStatus("");
+    session !== undefined && setAuthStatus("");
   }, [session]);
 
   const authenticate = async () => {
@@ -60,6 +117,13 @@ export default function LoginBtn() {
     }
   };
 
+  const logOut = () => {
+    signOut({
+      redirect: false,
+    });
+    removeListeners();
+  };
+
   return (
     <>
       {session && status === "authenticated" ? (
@@ -67,11 +131,7 @@ export default function LoginBtn() {
           text={`${authStatus ? authStatus : "Logout"}`}
           theme="outline"
           disabled={authStatus ? true : false}
-          onClick={() =>
-            signOut({
-              redirect: false,
-            })
-          }
+          onClick={() => logOut()}
         />
       ) : (
         <Button
