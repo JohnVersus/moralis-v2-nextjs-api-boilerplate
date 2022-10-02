@@ -20,8 +20,10 @@ export default function Test({
     if (userSession) {
       const options: getWalletNFTsParams = {
         address: userSession.user.address,
-        chain: userSession.user.chainId,
+        // chain: userSession.user.chainId,
+        chain: 80001,
       };
+      console.log(options);
       const response = await clientApiPost(
         "api/EvmApi/nft/getWalletNFTs",
         options
