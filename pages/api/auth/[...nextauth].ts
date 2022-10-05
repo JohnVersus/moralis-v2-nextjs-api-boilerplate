@@ -8,6 +8,7 @@ import clientPromise from "../../../lib/mongodb/mongodb";
 import dbConnect from "../../../lib/mongodb/dbConnect";
 import CryptoUser from "../../../model/CryptoUser";
 import User from "../../../model/User";
+import { adminAuth } from "../../../lib/firebase/firebase";
 
 export type CryptoUserData = {
   address: string;
@@ -15,6 +16,7 @@ export type CryptoUserData = {
   signature: string;
   profileId: string;
   expirationTime: ISODateString;
+  firebaseToken: string;
 };
 export interface CryptoUser extends DefaultUser {
   user: CryptoUserData;
@@ -49,8 +51,8 @@ export default NextAuth({
             throw new Error("nextAuthUrl !== uri");
           }
 
-          switch (process.env.DATABASE) {
-            case "mongo":
+          switch (process.env.NEXT_PUBLIC_DATABASE) {
+            case "mongo": {
               await dbConnect();
               const eUser = await CryptoUser.findOne({
                 profileId: profileId,
@@ -81,6 +83,32 @@ export default NextAuth({
                 );
                 return User;
               }
+            }
+            case "firebase": {
+              const eUser = await adminAuth.getUser(profileId).catch((e) => {
+                // console.log(e);
+              });
+              const firebaseToken = await adminAuth.createCustomToken(
+                profileId
+              );
+              const user = {
+                address,
+                chainId,
+                profileId,
+                expirationTime,
+                signature,
+                firebaseToken,
+              };
+              console.log(user);
+              if (!eUser) {
+                const newUser = await adminAuth.createUser({
+                  uid: profileId,
+                  displayName: address,
+                });
+                return user;
+              }
+              return user;
+            }
             default:
               const user = {
                 address,

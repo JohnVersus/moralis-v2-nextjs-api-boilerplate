@@ -37,7 +37,6 @@ export default function LoginBtn() {
       });
       (ethereum as any).on("chainChanged", (chain: string) => {
         console.log("Trigger chain change");
-        console.log(session, status);
         if (chain && session) {
           setAuthStatus("Changing Chain");
           authenticate();
@@ -48,9 +47,7 @@ export default function LoginBtn() {
     }
     return () => {
       if (ethereum) {
-        (ethereum as any).removeListener("accountsChanged", () => {});
-        (ethereum as any).removeListener("chainChanged", () => {});
-        // (ethereum as any).removeAllListeners();
+        (ethereum as any).removeAllListeners();
       }
     };
   }, [ethereum, session]);

@@ -1,6 +1,6 @@
 # Info
 
-Boilerplate project created using the [Moralis-v2](https://moralis.io/) package on the next.js framework, to simplify using v2 api's.
+Boilerplate project created using the [Moralis-v2](https://moralis.io/) package on the next.js framework, to simplify testing and using v2 api's.
 
 # Getting Started
 
@@ -8,7 +8,7 @@ Boilerplate project created using the [Moralis-v2](https://moralis.io/) package 
 
 Get the Moralis API key from [Moralis admin page](https://admin.moralis.io/web3apis)
 
-Rename the .env.local.example to .env.local and add the required API secrets.
+Rename the .env.local.example to .env.local and add the required secrets.
 
 ## Install Packages
 
@@ -29,6 +29,23 @@ yarn run dev -p 8000
 ```
 
 Open [http://localhost:8000](http://localhost:8000) with your browser to see the result.
+
+## Firestore security rules for cryptoUsers(users) collection.
+
+#### To be pasted in your firestore rules.
+
+```bash
+match /cryptoUsers/{cryptoUser} {
+    	allow delete: if false;
+      allow list: if request.auth != null
+      && resource.data.profileId == request.auth.uid;
+  		allow read, update: if request.auth != null
+      && resource.data != null
+      && resource.data.profileId == request.auth.uid;
+      allow create: if request.auth.uid != null
+  	}
+
+```
 
 ## Learn More
 

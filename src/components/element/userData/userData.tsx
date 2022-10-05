@@ -4,6 +4,7 @@ import { Typography } from "@web3uikit/core";
 import type { CryptoUser } from "../../../../pages/api/auth/[...nextauth]";
 import type { getNativeBalanceResult } from "../../../types/EvmApi";
 import { EvmChain } from "@moralisweb3/evm-utils";
+import FirebaseUser from "../firebase/firebaseUser";
 
 export default function UserData({
   session,
@@ -55,6 +56,12 @@ export default function UserData({
               {`${(Number(balance?.balance) / 1e18).toFixed(4)}
               ${chainData?._chainlistData.nativeCurrency.symbol}`}
             </Typography>
+          </div>
+        </div>
+        <div className={styles.dataCell}>
+          <Typography variant="subtitle2">Firebase Status:</Typography>
+          <div className={styles.address}>
+            <FirebaseUser session={session} />
           </div>
         </div>
         {/* <div className={styles.dataCell}>
