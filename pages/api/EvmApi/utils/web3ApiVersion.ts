@@ -18,6 +18,9 @@ export default async function handler(
     const data = await Moralis.EvmApi.utils.web3ApiVersion();
     res.status(200).json(data);
   } catch (error) {
-    res.status(400).json(error);
+    if (error instanceof Error) {
+      console.log(error.message);
+      res.status(400).json(error.message);
+    }
   }
 }

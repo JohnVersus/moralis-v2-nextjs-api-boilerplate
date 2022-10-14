@@ -58,7 +58,9 @@ export default async function handler(
     });
     res.status(200).json(message);
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ error });
+    if (error instanceof Error) {
+      console.log(error.message);
+      res.status(400).json(error.message);
+    }
   }
 }

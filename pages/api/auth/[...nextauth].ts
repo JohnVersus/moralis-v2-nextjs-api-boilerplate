@@ -68,8 +68,8 @@ export default NextAuth({
                 newUser
                   .save()
                   .then((newUser: any) => {})
-                  .catch((e: any) => {
-                    console.log(e);
+                  .catch((e: Error) => {
+                    console.log(e.message);
                   });
 
                 return newUser;
@@ -120,7 +120,7 @@ export default NextAuth({
               return user;
           }
         } catch (e) {
-          console.log(e);
+          e instanceof Error && console.log(e.message);
           throw new Error(`${e}`);
         }
       },

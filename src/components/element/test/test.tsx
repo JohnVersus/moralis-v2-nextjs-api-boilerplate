@@ -15,6 +15,7 @@ import {
 import { auth, db } from "../firebase/firebase";
 import { initializeApp } from "firebase/app";
 import { signOut } from "firebase/auth";
+import { AxiosError } from "axios";
 
 export default function Test({
   userSession,
@@ -28,32 +29,45 @@ export default function Test({
   //test
   const test = async () => {
     if (userSession) {
-      const options: getWalletNFTsParams = {
-        address: userSession.user.address,
-        chain: userSession.user.chainId,
-      };
-      console.log(options);
-      const response = await clientApiPost(
-        "api/EvmApi/nft/getWalletNFTs",
-        options
-      );
-      console.log({ response });
-      alert("Check console for response");
+      try {
+        const options: getWalletNFTsParams = {
+          address: "0x88207b431510DbE0AddBDaE3bD53013813fC8c71",
+          chain: 1,
+        };
+        console.log(options);
+        const response = await clientApiPost(
+          "api/EvmApi/nft/getWalletNFTs",
+          options
+        );
+        console.log({ response });
+        alert("Check console for response");
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          console.error(e.response?.data);
+          alert(e.response?.data);
+        }
+      }
     }
   };
   const getFromdb = async () => {
     // await signOut(auth);
-    const myCollection = collection(db, "cryptoUsers");
-    const queriedData = query(
-      myCollection,
-      where("profileId", "==", userSession.user.profileId)
-    );
-    const data = await getDocs(queriedData);
-    const processedData = data.docs.map((e) => {
-      return { userData: e.data(), id: e.id };
-    });
-    console.log(processedData);
-    alert("Check console for response");
+    try {
+      const myCollection = collection(db, "cryptoUsers");
+      const queriedData = query(
+        myCollection,
+        where("profileId", "==", userSession.user.profileId)
+      );
+      const data = await getDocs(queriedData);
+      const processedData = data.docs.map((e) => {
+        return { userData: e.data(), id: e.id };
+      });
+      console.log(processedData);
+      alert("Check console for response");
+    } catch (e) {
+      alert(e);
+      console.log("Check Firebase rules for permissions");
+      console.error(e);
+    }
   };
   return (
     <>

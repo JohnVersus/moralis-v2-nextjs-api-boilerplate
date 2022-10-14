@@ -38,6 +38,7 @@ export default function UserData({
         <div className={styles.dataCell}>
           <Typography variant="subtitle2">Network:</Typography>
           <div className={styles.address}>
+            {/* @ts-ignore */}
             <Typography variant="body16">{`${chainData?._chainlistData.name} - ${session?.user.chainId}`}</Typography>
           </div>
         </div>
@@ -53,8 +54,9 @@ export default function UserData({
           <Typography variant="subtitle2">Native Balance:</Typography>
           <div className={styles.address}>
             <Typography variant="body16">
-              {`${(Number(balance?.balance) / 1e18).toFixed(4)}
-              ${chainData?._chainlistData.nativeCurrency.symbol}`}
+              {`${(Number(balance?.balance) / 1e18).toFixed(4)}`}
+              {/* @ts-ignore */}
+              {` ${chainData?._chainlistData.nativeCurrency.symbol}`}
             </Typography>
           </div>
         </div>

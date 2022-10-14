@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import styles from "../styles/User.module.css";
 import { getSession, useSession } from "next-auth/react";
-import LogoutBtn from "../src/components/element/logoutBtn/logoutBtn";
 import { clientApiPost, serverApiPost } from "../src/utils/apiPost";
 import type { Session } from "next-auth";
 import type { Context } from "vm";
@@ -93,7 +92,6 @@ export default function UserPage({
           chainData={chainData}
         />
         <div className={styles.buttonsRow}>
-          <LogoutBtn />
           <Button onClick={test} text={"Test me"} />
         </div>
       </div>

@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "export": "next export",
     "lint": "next lint"
   },
   "dependencies": {
@@ -16,7 +17,7 @@
     "firebase-admin": "^11.0.1",
     "mongodb": "^4.9.1",
     "mongoose": "^6.6.0",
-    "moralis": "^2.6.0",
+    "moralis": "^2.6.5",
     "next": "12.2.4",
     "next-auth": "^4.10.3",
     "react": "18.2.0",

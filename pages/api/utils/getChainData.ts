@@ -18,6 +18,9 @@ export default async function handler(
     const chainData = EvmChain.create(chainId);
     res.status(200).json(chainData);
   } catch (error) {
-    res.status(400).json(error);
+    if (error instanceof Error) {
+      console.log(error.message);
+      res.status(400).json(error.message);
+    }
   }
 }
