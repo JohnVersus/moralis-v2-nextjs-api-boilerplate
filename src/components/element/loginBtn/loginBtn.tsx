@@ -25,7 +25,7 @@ export default function LoginBtn() {
         console.log("Trigger account change");
         if (
           account.length > 0 &&
-          (session as unknown as CryptoUser)
+          session
           // for Special Case where user manually disconnects from metamask
           // (session as unknown as CryptoUser).user.address === account[0]
         ) {

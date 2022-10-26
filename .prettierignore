@@ -1,2 +1,4 @@
 src/types/EvmApi
 src/types/SolApi
+src/types/Streams
+functions/types

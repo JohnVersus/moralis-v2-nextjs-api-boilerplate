@@ -15,6 +15,12 @@
     "isolatedModules": true,
     "jsx": "preserve"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/_app.jx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "pages/_app.jx",
+    "src/utils/apiPost.js"
+  ],
   "exclude": ["node_modules"]
 }

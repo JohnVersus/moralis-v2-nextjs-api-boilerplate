@@ -23,10 +23,8 @@ export default function Home({
   useEffect(() => {
     if (localSession !== undefined && userSession !== undefined)
       if (
-        (localSession as unknown as CryptoUser)?.user.address !==
-          userSession?.user.address ||
-        (localSession as unknown as CryptoUser)?.user.chainId !==
-          userSession?.user.chainId
+        localSession?.user.address !== userSession?.user.address ||
+        localSession?.user.chainId !== userSession?.user.chainId
       ) {
         console.log("triggered pageRefresh");
         router.replace(router.asPath);

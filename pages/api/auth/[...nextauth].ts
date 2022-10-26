@@ -16,9 +16,9 @@ export type CryptoUserData = {
   signature: string;
   profileId: string;
   expirationTime: ISODateString;
-  firebaseToken: string;
+  firebaseToken?: string;
 };
-export interface CryptoUser extends DefaultUser {
+export interface CryptoUser {
   user: CryptoUserData;
 }
 // For more information on each option (and a full list of options) go to

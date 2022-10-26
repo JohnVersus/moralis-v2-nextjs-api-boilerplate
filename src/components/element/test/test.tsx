@@ -16,6 +16,7 @@ import { auth, db } from "../firebase/firebase";
 import { initializeApp } from "firebase/app";
 import { signOut } from "firebase/auth";
 import { AxiosError } from "axios";
+import getConfig from "next/config";
 
 export default function Test({
   userSession,
@@ -25,16 +26,22 @@ export default function Test({
   chainData: EvmChain;
 }) {
   const { data: localSession } = useSession();
+  const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+
+  console.log("server", serverRuntimeConfig.SECRTE);
+  console.log("public", publicRuntimeConfig.SECRTE);
 
   //test
   const test = async () => {
     if (userSession) {
       try {
         const options: getWalletNFTsParams = {
-          address: "0x88207b431510DbE0AddBDaE3bD53013813fC8c71",
-          chain: 1,
+          address: userSession.user.address,
+          chain: userSession.user.chainId,
+          // address: "0x20665ea97f56A320bBE9470c750B22eFE7B20787",
+          // chain: EvmChain.ETHEREUM,
+          // tokenAddresses: ["0x29652C2e9D3656434Bc8133c69258C8d05290f41"],
         };
-        console.log(options);
         const response = await clientApiPost(
           "api/EvmApi/nft/getWalletNFTs",
           options
