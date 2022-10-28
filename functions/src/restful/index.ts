@@ -1,1 +1,1 @@
-export * from "./Streams";
+export * from "./StreamHooks";

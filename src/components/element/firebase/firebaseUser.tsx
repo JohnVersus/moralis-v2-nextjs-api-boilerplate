@@ -32,49 +32,37 @@ export default function FirebaseUser({
   const [authStatus, setAuthStatus] = useState<boolean>(false);
 
   const authenticate = async () => {
-    const signIn = await signInWithCustomToken(auth, firebaseToken).catch(
-      (e) => {
-        signOut({
-          redirect: false,
+    if (firebaseToken) {
+      const signIn = await signInWithCustomToken(auth, firebaseToken)
+        .then(async () => {
+          const myCollection = collection(db, "cryptoUsers");
+          const queriedData = query(
+            myCollection,
+            where("profileId", "==", profileId)
+          );
+          const data = await getDocs(queriedData);
+          if (data.docs[0]) {
+            const docRef = doc(db, "cryptoUsers", data.docs[0].id);
+            await updateDoc(docRef, {
+              expirationTime,
+              chainId,
+              signature,
+            });
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          signOut({
+            redirect: false,
+          });
         });
-      }
-    );
-  };
-
-  const addOrUpdateDb = async () => {
-    const myCollection = collection(db, "cryptoUsers");
-    const queriedData = query(
-      myCollection,
-      where("profileId", "==", profileId)
-    );
-    const data = await getDocs(queriedData);
-    if (data.docs[0]) {
-      const docRef = doc(db, "cryptoUsers", data.docs[0].id);
-      await updateDoc(docRef, {
-        expirationTime,
-        chainId,
-        signature,
-      });
-    } else {
-      const addedDocs = await addDoc(myCollection, {
-        profileId,
-        expirationTime,
-        chainId,
-        signature,
-        address,
-      });
     }
   };
 
-  const compareUserSession = async () => {
+  const processFirebaseAuth = async () => {
     if (firebaseToken) {
-      const currentUser = auth.currentUser;
-      if (currentUser?.displayName !== address) {
-        setStatus("Procession Firebase Authentication");
-        await authenticate();
-      }
-      setStatus("Updating database with session");
-      await addOrUpdateDb();
+      setStatus("Procession Firebase Authentication");
+      await authenticate();
       setStatus("Connected to Firebase");
     } else {
       setStatus("Not connected to Firebase");
@@ -82,23 +70,27 @@ export default function FirebaseUser({
   };
 
   useEffect(() => {
-    console.log({ session });
-    compareUserSession();
-  }, [session]);
+    console.log({ session, authStatus });
+    processFirebaseAuth();
+  }, [session, authStatus]);
 
   // This should be used to control session in production.
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log("Firebase auth state changed to true");
-        setAuthStatus(true);
-      } else {
-        console.log("Firebase auth state changed to false");
-        setAuthStatus(false);
-        setStatus("Not connected to Firebase");
-        // signOut({
-        //   redirect: false,
-        // });
+      try {
+        if (user) {
+          console.log("Firebase auth state changed to true");
+          setAuthStatus(true);
+        } else {
+          console.log("Firebase auth state changed to false");
+          setAuthStatus(false);
+          setStatus("Not connected to Firebase");
+          // signOut({
+          //   redirect: false,
+          // });
+        }
+      } catch (e) {
+        console.log(e);
       }
     });
     return unsubscribe;

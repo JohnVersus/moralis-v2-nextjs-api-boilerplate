@@ -99,12 +99,12 @@ export default NextAuth({
                 signature,
                 firebaseToken,
               };
-              console.log(user);
               if (!eUser) {
                 const newUser = await adminAuth.createUser({
                   uid: profileId,
                   displayName: address,
                 });
+
                 return user;
               }
               return user;
