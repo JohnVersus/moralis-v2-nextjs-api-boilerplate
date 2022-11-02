@@ -4,6 +4,8 @@ Boilerplate project created using the [Moralis-v2](https://moralis.io/) package 
 
 `Just for testing only. Maynot be used for production.`
 
+`This docs are outdated as of now. Will be updated soon.`
+
 # Getting Started
 
 ## Setup .env.local
