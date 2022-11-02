@@ -2,6 +2,8 @@
 
 Boilerplate project created using the [Moralis-v2](https://moralis.io/) package on the next.js framework, to simplify testing and using v2 api's.
 
+`Purly for testing only. Maynot be used for production.`
+
 # Getting Started
 
 ## Setup .env.local
